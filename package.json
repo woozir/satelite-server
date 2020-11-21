@@ -17,6 +17,8 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "pretest:e2e": "docker-compose up -d test-db",
+    "posttest:e2e": "docker-compose stop test-db && docker-compose rm -f test-db",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",

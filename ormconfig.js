@@ -4,19 +4,7 @@ require('dotenv').config();
 let config;
 switch (process.env.NODE_ENV) {
   case 'test':
-    config = {
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'maz-dev',
-      password: '',
-      database: 'woozirtest',
-      entities: ['dist/**/*.entity.js'],
-      migrations: ['dist/migrations/*.js'],
-      cli: {
-        migrationsDir: 'src/migrations',
-      },
-    };
+    config = {};
     break;
   case 'prod':
     config = {

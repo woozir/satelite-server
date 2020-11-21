@@ -124,7 +124,17 @@ describe('UserService', () => {
     it('should find a user already existing', async () => {
       const user = { id: '134-abc-124', username: 'toto' };
       jest.spyOn(repo, 'findOne').mockReturnValueOnce(Promise.resolve(user));
-      expect(await service.findOne(user.id)).toBeTruthy();
+      expect(await service.findByUsername(user.username)).toEqual(user);
+    });
+
+    it('should throw if user not found', async () => {
+      const user = { id: '134-abc-124', username: 'toto' };
+      jest.spyOn(repo, 'findOne').mockReturnValueOnce(undefined);
+      try {
+        await service.findByUsername(user.username);
+      } catch (e) {
+        expect(e).toBeInstanceOf(NotFoundException);
+      }
     });
   });
 });

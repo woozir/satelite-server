@@ -18,7 +18,7 @@ services:
       REDIS_URL: redis://redis-cache:6379  
     ports:
       - 3001:3001
-    command: bash -c "npm run migrate && npm run start:prod"
+    command: /bin/sh -c "npm run migrate && npm run start:prod"
     depends_on:
       - redis-cache
       - postgres

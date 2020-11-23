@@ -12,3 +12,5 @@ export const createMockRepository = <T = any>(): MockRepository<T> => ({
   preload: jest.fn(),
   save: jest.fn(),
 });
+
+export const createMockRedis = () => ({});

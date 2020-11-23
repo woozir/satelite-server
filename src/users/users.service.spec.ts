@@ -137,4 +137,39 @@ describe('UserService', () => {
       }
     });
   });
+
+  describe('set presence', () => {
+    it('should update an existing user', async () => {
+      const userId = '134-abc-124';
+
+      jest.spyOn(repo, 'preload').mockReturnValueOnce(
+        Promise.resolve({
+          username: 'toto',
+          present: true,
+        }),
+      );
+      jest.spyOn(repo, 'save').mockReturnValueOnce(
+        Promise.resolve({
+          username: 'toto',
+          present: true,
+        }),
+      );
+      expect(await service.setPresent({ id: userId, present: true })).toEqual({
+        username: 'toto',
+        present: true,
+      });
+    });
+    it('otherwise should throw NotFoundError', async () => {
+      const userId = '134-abc-124';
+      const testUser: User = {
+        username: 'toto',
+      };
+      jest.spyOn(repo, 'save').mockReturnValueOnce(Promise.resolve(testUser));
+      try {
+        await service.setPresent({ id: userId, present: false });
+      } catch (e) {
+        expect(e).toBeInstanceOf(NotFoundException);
+      }
+    });
+  });
 });

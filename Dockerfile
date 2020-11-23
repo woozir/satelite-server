@@ -1,6 +1,7 @@
 FROM node:14 AS builder
 WORKDIR /app
 COPY ./package.json ./
+COPY ./wait-for-it.sh ./
 RUN npm install
 COPY . .
 RUN npm run build

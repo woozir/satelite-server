@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
+import { SetPresentDTO } from './dto/set-present.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 
@@ -52,5 +53,17 @@ export class UsersService {
   async delete(id: string) {
     const user = await this.usersRepository.findOne(id);
     return this.usersRepository.delete(user);
+  }
+
+  async setPresent(setPresentDTO: SetPresentDTO) {
+    const user = await this.usersRepository.preload({
+      id: setPresentDTO.id,
+      present: setPresentDTO.present,
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User #${setPresentDTO.id} not found`);
+    }
+    return this.usersRepository.save(user);
   }
 }

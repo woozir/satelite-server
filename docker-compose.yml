@@ -1,17 +1,47 @@
-version: '3'
+version: '3.7'
 
 services:
-  db:
-    image: postgres
+  main:
+    container_name: main
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      TYPEORM_CONNECTION: postgres
+      TYPEORM_HOST: postgres
+      TYPEORM_USERNAME: postgres
+      TYPEORM_PASSWORD: woozir
+      TYPEORM_DATABASE: woozir
+      TYPEORM_PORT: 5432
+      TYPEORM_ENTITIES: entity/*.js,modules/**/entity/*.js
+      TYPEORM_MIGRATIONS: dist/migrations/*.js
+      REDIS_URL: redis://redis-cache:6379  
+    ports:
+      - 3001:3001
+    command: npm run migrate
+    depends_on:
+      - redis-cache
+      - postgres
+  redis-cache:
+    container_name: redis-cache
+    image: "redis:alpine"
+    command: redis-server
     restart: always
     ports:
-      - '5432:5432'
-    environment:
-      POSTGRES_PASSWORD: pass123
-  test-db:
-    image: postgres
+      - 6379:6379
+  postgres:
+    container_name: postgres
+    image: postgres:latest
     restart: always
-    ports:
-      - '5433:5432'
     environment:
-      POSTGRES_PASSWORD: pass123
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: woozir
+      POSTGRES_DB: woozir
+      POSTGRES_DATA: /var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

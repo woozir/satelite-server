@@ -6,4 +6,7 @@ import { Column, Entity, Unique } from 'typeorm';
 export class User extends BaseEntity {
   @Column('varchar')
   username: string;
+
+  @Column('boolean', { default: false })
+  present?: boolean;
 }

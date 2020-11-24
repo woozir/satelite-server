@@ -73,13 +73,11 @@ export class UsersService {
 
   @Cron(CronExpression.EVERY_DAY_AT_1PM)
   async resetMiddleOfDay() {
-    this.logger.debug('Called every 5 seconds');
     await this.resetPresence();
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_7PM)
   async resetEndOfDay() {
-    this.logger.debug('Called every 10 seconds');
     await this.resetPresence();
   }
 

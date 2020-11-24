@@ -1,10 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { createMockRepository } from '../testutils';
-import { DeleteResult, Repository } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
 import { NotFoundException } from '@nestjs/common';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 describe('UserService', () => {
   let service: UsersService;
@@ -18,10 +19,12 @@ describe('UserService', () => {
           provide: getRepositoryToken(User),
           useValue: createMockRepository(),
         },
+        { provide: Connection, useValue: {} },
       ],
     }).compile();
     repo = module.get<Repository<User>>(getRepositoryToken(User));
     service = module.get<UsersService>(UsersService);
+    jest.spyOn(service, 'resetPresence').mockReturnValue(Promise.resolve());
   });
   it('should be defined', () => {
     expect(service).toBeDefined();
@@ -62,7 +65,7 @@ describe('UserService', () => {
   describe('update', () => {
     it('should update user when user exists', async () => {
       const userId = '134-abc-124';
-      const testUser: User = {
+      const testUser: UpdateUserDto = {
         username: 'toto',
       };
       jest
@@ -88,15 +91,9 @@ describe('UserService', () => {
   describe('delete', () => {
     it('should delete an existing user', async () => {
       const user = { id: '134-abc-124', username: 'toto' };
-      const deleteResult: DeleteResult = {
-        raw: '',
-        affected: 1,
-      };
 
       jest.spyOn(repo, 'findOne').mockReturnValueOnce(Promise.resolve(user));
-      jest
-        .spyOn(repo, 'delete')
-        .mockReturnValueOnce(Promise.resolve(deleteResult));
+      jest.spyOn(repo, 'remove').mockReturnValueOnce(Promise.resolve(user));
 
       expect(await service.delete(user.id)).toBeTruthy();
     });

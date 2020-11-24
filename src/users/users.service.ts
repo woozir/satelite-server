@@ -56,7 +56,7 @@ export class UsersService {
 
   async delete(id: string) {
     const user = await this.usersRepository.findOne(id);
-    return this.usersRepository.delete(user);
+    return this.usersRepository.remove(user);
   }
 
   async setPresent(setPresentDTO: SetPresentDTO) {

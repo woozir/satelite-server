@@ -16,6 +16,7 @@ services:
       TYPEORM_ENTITIES: dist/**/*.entity.js
       TYPEORM_MIGRATIONS: dist/migrations/*.js
       REDIS_URL: redis://redis-cache:6379  
+      SEC_TOKEN: ${SEC_TOKEN}
     ports:
       - 3001:3001
     command: /bin/sh -c "npm run migrate && npm run start:prod"

@@ -7,7 +7,7 @@ import { RedisModule } from 'nestjs-redis';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ envFilePath: '.dev.env' }),
     TypeOrmModule.forRoot(),
     RedisModule.register({
       url: process.env.REDIS_URL || 'redis://localhost:6379',

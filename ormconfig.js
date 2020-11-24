@@ -1,5 +1,7 @@
 // eslint-disable-next-line
-require('dotenv').config();
+const path = require('path');
+// eslint-disable-next-line
+require('dotenv').config({ path: path.resolve(process.cwd(), '.dev.env') });
 
 let config;
 switch (process.env.NODE_ENV) {

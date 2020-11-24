@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PresenceModule } from './presence/presence.module';
 import { UsersModule } from './users/users.module';
 import { RedisModule } from 'nestjs-redis';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { RedisModule } from 'nestjs-redis';
     RedisModule.register({
       url: process.env.REDIS_URL || 'redis://localhost:6379',
     }),
+    ScheduleModule.forRoot(),
     PresenceModule,
     UsersModule,
   ],

@@ -1,6 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Connection, In, Repository } from 'typeorm';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { CreateUserDto } from './dto/create-user.dto';
 import { SetPresentDTO } from './dto/set-present.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -8,9 +9,12 @@ import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
+  private readonly logger = new Logger(UsersService.name);
+
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    private connection: Connection,
   ) {}
 
   create(userInput: CreateUserDto): Promise<User> {
@@ -65,5 +69,18 @@ export class UsersService {
       throw new NotFoundException(`User #${setPresentDTO.id} not found`);
     }
     return this.usersRepository.save(user);
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_1PM)
+  async resetPresence() {
+    this.logger.debug('Called every 5 seconds');
+    const users = await this.usersRepository.find();
+    const userIds = users.map(user => user.id);
+    await this.connection
+      .createQueryBuilder()
+      .update(User)
+      .set({ present: false })
+      .where({ id: In(userIds) })
+      .execute();
   }
 }
